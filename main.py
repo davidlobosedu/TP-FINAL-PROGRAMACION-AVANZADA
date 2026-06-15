@@ -85,7 +85,7 @@ class FichaTecnica:
 # Herencia: Libro hereda de MaterialBibliografico
 class Libro(MaterialBibliografico):
     def __init__(self, titulo, autor, isbn, anio, paginas):
-        # Llamamos al inicializador de la clase padre (MaterialBibliografico)
+        # llamamos al inicializador de la clase padre (MaterialBibliografico)
         super().__init__(titulo, autor)
         
         # Composición: libro crea internamente su FichaTecnica.
@@ -108,3 +108,32 @@ class Usuario:
         # Esta clase también tiene "mostrar_info", pero hace otra cosa (polimorfismo)
     def mostrar_info(self):
         return f"Usuario: {self.nombre} {self.apellido} | DNI: {self.dni} | Correo: {self.correo}"
+    
+class Prestamo:
+        # Un préstamo modela la relación entre un Libro y un Usuario.
+        # Agregación; si el préstamo se elimina, el libro y el usuario conservan su propio ciclo de vida.
+    def __init__(self, libro, usuario):
+        self.libro = libro       # Agregación del objeto Libro
+        self.usuario = usuario   # Agregación del objeto Usuario
+        self.fecha_prestamo = datetime.datetime.now().strftime("%Y-%m-%d")
+        self.fecha_devolucion = None
+
+    def finalizar(self):
+        self.fecha_devolucion = datetime.datetime.now().strftime("%Y-%m-%d")
+
+    def __str__(self):
+        estado = "Activo" if not self.fecha_devolucion else f"Devuelto el {self.fecha_devolucion}"
+        return f"Préstamo: '{self.libro.titulo}' prestado a {self.usuario.nombre} ({estado})"
+    
+class GestorBiblioteca:
+    _instancia = None
+    # elegí el patrón singleton ya que puede existir una instancia de GestorBiblioteca.
+    # método __new__ intercepta la creación del objeto, si ya existe devuelve el mismo en vez de crear uno nuevo.
+    def __new__(cls, *args, **kwargs):
+        if not cls._instancia:
+            cls._instancia = super(GestorBiblioteca, cls).__new__(cls, *args, **kwargs)
+            # Inicializamos las listas de datos (en el caso de bases de datos en memoria)
+            cls._instancia.libros = []
+            cls._instancia.usuarios = []
+            cls._instancia.prestamos = []
+        return cls._instancia
