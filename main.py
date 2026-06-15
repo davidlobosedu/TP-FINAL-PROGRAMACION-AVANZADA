@@ -70,3 +70,14 @@ MaterialBibliografico = type(
         'mostrar_info': info_base
     }
 )
+
+# Se crea una clase de composición para almacenar detalles técnicos de los libros.
+# FichaTecnica no tiene sentido que exista suelta si no hay un libro.
+class FichaTecnica:
+    def __init__(self, isbn, anio, paginas):
+        self.isbn = isbn
+        self.anio = anio
+        self.paginas = paginas
+
+    def __str__(self):
+        return f"ISBN: {self.isbn} | Año: {self.anio} | Páginas: {self.paginas}"
